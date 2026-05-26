@@ -1,9 +1,9 @@
 {
-  "id": "https://johnthewiser.github.io/eml.github.io",
-  "scope": "https://johnthewiser.github.io/eml.github.io",
+  "id": "/",
+  "scope": "/",
   "name": "EML Bluetooth Counter",
   "display": "fullscreen",
-  "start_url": "https://johnthewiser.github.io/eml.github.io",
+  "start_url": "/",
   "short_name": "EMLCount",
   "theme_color": "White",
   "description": "EML Bluetooth Counter",
