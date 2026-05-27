@@ -1509,10 +1509,13 @@ function blankCount()
 <!--	displaySection1Status(">>> FOR DEBUG ONLY >>> Disconnection event detected","red"); -->
 		try
 			{
+				console.log("Wait for reconnect");
 				await btDevice.gatt.connect(); //wait while trying to connect to device again
+				console.log("Reconnected");
 			}
     catch(error)
     	{
+			console.log(Connection error);
 			//disconnected>
       	console.log('Error11: ' + error.code );
       	if(error.code == 19)//this is a network error meaning bluetooth has been turned off
