@@ -1509,7 +1509,8 @@ function blankCount()
 		try
 			{
 				console.log("Wait for reconnect");
-				await btDevice.gatt.connect(); //wait while trying to connect to device again
+//				await btDevice.gatt.connect(); //wait while trying to connect to device again				
+				btDevice.gatt.connect(); //wait while trying to connect to device again
 				console.log("Reconnected");
 			}
     catch(error)
