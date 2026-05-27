@@ -1515,63 +1515,65 @@ function blankCount()
     catch(error)
     	{
 			console.log("Connection error");
-			//disconnected>
-      	console.log('Error11: ' + error.code );
-      	if(error.code == 19)//this is a network error meaning bluetooth has been turned off
-      		{
-						console.log('Error12: Disconnected');
-						displaySection1Status("Disconnected. Please ensure Bluetooth is enabled & counter is in range and powered up","red");
-						enableDisableButton('button1',disable);
-						enableDisableCount(disable); //grey out count and buttons
-						waitForBluetoothEnable=setInterval( function()
-      				{
-								if(document.getElementById('button2').innerHTML==button2SecondaryString)
-									{
-										enableDisableButton('button2',disable);
-									}
-								let btConnectionStatus = btDevice.gatt.connect();
-      					btConnectionStatus.then
+		//disconnected>
+      		console.log('Error11: ' + error.code );
+      		if(error.code == 19)//if this is a network error meaning bluetooth has been turned off
+      			{
+					console.log('Error12: Disconnected');
+					displaySection1Status("Disconnected. Please ensure Bluetooth is enabled & counter is in range and powered up","red");
+					enableDisableButton('button1',disable);
+					enableDisableCount(disable); //grey out count and buttons
+					waitForBluetoothEnable=setInterval( function()
+      					{
+							if(document.getElementById('button2').innerHTML==button2SecondaryString)
+								{
+									enableDisableButton('button2',disable);
+								}
+							let btConnectionStatus = btDevice.gatt.connect();
+      						btConnectionStatus.then
 							//reconnected>
-      							(async result =>
-      								{
-										clearInterval(waitForBluetoothEnable);
-										displaySection1Status("","black");
-										enableDisableButton('button1',enable);
+      							(
+									async result =>
+      									{
+											clearInterval(waitForBluetoothEnable);
+											displaySection1Status("","black");
+											enableDisableButton('button1',enable);
+      										enableDisableCount(enable);//display count and buttons in normal colours and enable count notifications
+                                			btService = await btServer.getPrimaryService(btServiceId);
+                                			btCharacteristic=await btService.getCharacteristic(btCharacteristicId);
+											if(document.getElementById('button2').innerHTML == button2PrimaryString) //if count hasn't been stopped
+												{
+													await btCharacteristic.startNotifications();
+        					  						btCharacteristic.addEventListener('characteristicvaluechanged',handleCountNotification);
+													btValue = await btCharacteristic.readValue();
+													displayCount();
+												}
+											else
+												{
+													if(document.getElementById('button2').innerHTML == button2SecondaryString) //if count hasn't been stopped
+														{
+															enableDisableButton('button2',enable);
+														}
+												}
       									enableDisableCount(enable);//display count and buttons in normal colours and enable count notifications
-                                		btService = await btServer.getPrimaryService(btServiceId);
-                                		btCharacteristic=await btService.getCharacteristic(btCharacteristicId);
-										if(document.getElementById('button2').innerHTML == button2PrimaryString) //if count hasn't been stopped
-											{
-												await btCharacteristic.startNotifications();
-        		  					btCharacteristic.addEventListener('characteristicvaluechanged',handleCountNotification);
-												btValue = await btCharacteristic.readValue();
-												displayCount();
-											}
-										else
-											{
-												if(document.getElementById('button2').innerHTML == button2SecondaryString) //if count hasn't been stopped
-													{
-														enableDisableButton('button2',enable);
-													}
-											}
-      									enableDisableCount(enable);//display count and buttons in normal colours and enable count notifications
-									}
+										} //end of async result =>
       							)
       							.catch
-      								(error =>
-      									{
-      										console.log('Error13: ' + error + ', ' + error.code);
-      									}
-      											);
-      									},1000);
+      								(
+										error =>
+      										{
+      											console.log('Error13: ' + error + ', ' + error.code);
+      										}
+      								);
+      					},1000); //end of waitForBluetoothEnable=setInterval( function()
 
-      							} //if btDevice.gatt.connect() abpve returns anything other than a network error output the error information to the console as usual
-      						else
-      							{
-      								console.log('Error: '  + error.code + ', message: ' + error.message + ' Service ' + btCharacteristic.service.uuid
-      								+ ', uuid ' +btCharacteristic.uuid + ', Notify ' + btCharacteristic.properties.notify + ', Read ' + btCharacteristic.properties.read
-      								+ ', Value ' + btCharacteristic.value);
-      							}
+      		} //if btDevice.gatt.connect() above returns anything other than a network error output the error information to the console as usual
+		else
+			{
+				console.log('Error: '  + error.code + ', message: ' + error.message + ' Service ' + btCharacteristic.service.uuid
+					+ ', uuid ' +btCharacteristic.uuid + ', Notify ' + btCharacteristic.properties.notify + ', Read ' + btCharacteristic.properties.read
+					+ ', Value ' + btCharacteristic.value);
+			}
       					}
       		}// end of function onDisconnect
       //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< onDisconnect <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
