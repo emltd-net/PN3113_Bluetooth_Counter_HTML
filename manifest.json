@@ -3,7 +3,7 @@
   "scope": "/",
   "name": "EML Bluetooth Counter",
   "display": "fullscreen",
-  "start_url": "index.htm",
+  "start_url": "index.html",
   "short_name": "EMLCount",
   "theme_color": "White",
   "description": "EML Bluetooth Counter",
